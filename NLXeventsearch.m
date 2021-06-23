@@ -2,18 +2,31 @@
 %
 % Identify CSC file that matches with event files for a participant.
 %
-% Instructions: 1. Find event file in saveSess that matches timestamp with .txt file of
-% behavioral data recording. 2. Enter that saveSess # into saveSessAll{_}. 
+% Instructions: 1. Find event file in saveSessAll that matches timestamp with .txt file of
+% behavioral data recording. 2. Enter that saveSess # into saveSessAll{_}.
+% 
+% Need to change: 1. Directory location of 'allSessionData.mat' 
+%                 2. Directory location of CSC files
+%                 3. Make sure Nlx2Mat functions are on path 
 % 
 % Output 'SessionDATE' = Timestamp for event file to compare with .txt file
 % Output 'foundCSC' = CSC file name that matches the event file
 %
 % John A. Thompson | May 28 2021
 
-% Locate saveSess file thar matches timestamp by plugging file #'s in {} 
+% Add Nlx2Mat functions to path
+addpath('C:\Users\darwinm\Documents\Github\NLX-Event-Viewer\NLX_IE_Code');
+
+% Load location of 'allSessionData.mat' for patient
+cd('C:\Users\darwinm\Documents\Thompson Lab\Microwire\PatientData\MW1\SessionSaves');
+
+% Locate saveSess file that matches timestamp by plugging file #'s in {} 
 timeSTAMP=saveSessAll{10}.StartTime;
 timeREcord = datetime(timeSTAMP/1000000,'ConvertFrom','posixtime','TimeZone','America/Denver');
 SessionDATE=timeREcord+hours(6)
+
+%cd to CSC files for patient
+cd('C:\Users\darwinm\Documents\Thompson Lab\Microwire\PatientData\MW1\Events');
 
 % Locate unique CSC extension files (i.e, CSC1__001, __002)
 cscRepoT = dir('*.ncs');
@@ -34,7 +47,7 @@ ephInd = zeros(size(allCSCns));
 
 for ci = 1:length(allCSCns)
 
-   [TimestampsCSC, ~, ~, ~,...
+   [TimestampsCSC, ~, ~, ~,... 
        ~, ~] = Nlx2MatCSC(allCSCns{ci}, [1 1 1 1 1], 1, 1, [] );
 
     % Create interpolation
